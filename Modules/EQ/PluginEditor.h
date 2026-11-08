@@ -4,6 +4,7 @@
 #include <juce_dsp/juce_dsp.h>
 #include "PluginProcessor.h"
 #include "VintageUI.h"
+#include "RackStyle.h"
 
 // Farben des Röhrenbildschirms
 namespace crt
@@ -93,15 +94,14 @@ public:
 private:
     void selectBand (int band);
     void timerCallback() override;
-    void renderTextures();
-    void drawEngraved (juce::Graphics&, const juce::String&, juce::Rectangle<float>, juce::Font, juce::Justification);
+    void renderPanel();
 
     using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
     using ButtonAttachment = juce::AudioProcessorValueTreeState::ButtonAttachment;
     using ComboAttachment  = juce::AudioProcessorValueTreeState::ComboBoxAttachment;
 
     KlangbildAudioProcessor& proc;
-    VintageLookAndFeel lnf;
+    RackLookAndFeel lnf;
 
     ResponseDisplay display;
     VuMeter vuLeft { lnf, "L" }, vuRight { lnf, "R" };
@@ -115,8 +115,10 @@ private:
     std::unique_ptr<ButtonAttachment> onAtt;
     std::unique_ptr<ComboAttachment>  slopeAtt, analyzerAtt;
 
-    juce::Rectangle<int> faceplate, bezel, analyzerArea, slopeLabelArea, onLabelArea, bandLabelArea, hintArea;
-    juce::Image tolexImage, faceplateImage;
+    static constexpr int rackW = 1280, rackH = 630;
+    std::array<juce::Rectangle<int>, 3> sections;
+    juce::Rectangle<int> nameplate, bezel, vuBezelL, vuBezelR, tagArea, slopeLabelArea, onLabelArea, hintArea;
+    juce::Image panelImage;
     int selectedBand = 2;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KlangbildAudioProcessorEditor)
