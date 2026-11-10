@@ -1,5 +1,6 @@
 #include "DrumsProcessor.h"
 #include "DrumsEditor.h"
+#include "ScaledEditor.h"
 
 #include "../Modules/Band/PluginProcessor.h"
 #include "../Modules/EQ/PluginProcessor.h"
@@ -300,6 +301,6 @@ void DrumsAudioProcessor::setStateInformation (const void* data, int sizeInBytes
         m.mix.setCurrentAndTargetValue (m.on->load() > 0.5f ? 1.0f : 0.0f);
 }
 
-juce::AudioProcessorEditor* DrumsAudioProcessor::createEditor() { return new DrumsAudioProcessorEditor (*this); }
+juce::AudioProcessorEditor* DrumsAudioProcessor::createEditor() { return new kb::ScaledEditor (*this, new DrumsAudioProcessorEditor (*this)); }
 
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter() { return new DrumsAudioProcessor(); }
