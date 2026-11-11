@@ -47,8 +47,9 @@ DrumsAudioProcessorEditor::DrumsAudioProcessorEditor (DrumsAudioProcessor& p)
     addAndMakeVisible (vuLeft);
     addAndMakeVisible (vuRight);
     addAndMakeVisible (moduleHolder);
+    addAndMakeVisible (modulePresets);
 
-    setSize (1120, 820);
+    setSize (1120, 860);
     selectModule (juce::jlimit (0, DrumsAudioProcessor::numModules - 1, (int) proc.apvts.state.getProperty ("selected", 0)));
     startTimerHz (60);
 }
@@ -71,6 +72,11 @@ void DrumsAudioProcessorEditor::selectModule (int index)
 
     moduleEditor.reset();
     moduleEditor.reset (proc.getModule (index).createEditorIfNeeded());
+    {
+        const juce::String t (DrumsAudioProcessor::moduleInfos()[(size_t) index].title);
+        modulePresets.setTarget (&proc.getModule (index), kb::PresetBar::deviceFromTitle (t));
+        modulePresets.setTitleText ("MODUL " + t);
+    }
     if (moduleEditor != nullptr)
         moduleHolder.addAndMakeVisible (*moduleEditor);
     layoutModuleEditor();
@@ -206,7 +212,8 @@ void DrumsAudioProcessorEditor::resized()
     presetBox.setBounds (W - 24 - 320 - 86 - 270, 40, 250, 30);
     layoutTiles();
 
-    moduleArea = juce::Rectangle<int> (16, 194, W - 32, getHeight() - 194 - 14);
+    modulePresets.setBounds (16, 190, W - 32, kb::PresetBar::height);
+    moduleArea = juce::Rectangle<int> (16, 190 + kb::PresetBar::height + 10, W - 32, getHeight() - 190 - kb::PresetBar::height - 10 - 14);
     renderTolex();
     layoutModuleEditor();
 }
